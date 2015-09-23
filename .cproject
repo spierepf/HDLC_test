@@ -25,7 +25,7 @@
 								<option id="gnu.cpp.compiler.exe.debug.option.debugging.level.1697881003" name="Debug Level" superClass="gnu.cpp.compiler.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.1449941486" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="/home/peter/opt/boost_1_59_0"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/pt/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/pt}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/HDLC/include}&quot;"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.debugging.codecov.1179006131" name="Generate gcov information (-ftest-coverage -fprofile-arcs)" superClass="gnu.cpp.compiler.option.debugging.codecov" value="true" valueType="boolean"/>
