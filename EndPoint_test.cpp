@@ -11,6 +11,7 @@
 
 #include "RingBufferWriter.h"
 #include "RingBufferReader.h"
+#include "FrameBufferUserFrameHandler.h"
 
 #include <iostream>
 
@@ -51,9 +52,14 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_does_nothing_when_give_no_frames ) {
 			FrameTransmitter(sink[B], outgoingFrameBuffer[B])
 	};
 
+	FrameBufferUserFrameHandler userFrameHandler[2] = {
+			FrameBufferUserFrameHandler(incomingFrameBuffer[A]),
+			FrameBufferUserFrameHandler(incomingFrameBuffer[B])
+	};
+
 	FrameReceiver frameReceiver[2] = {
-			FrameReceiver(source[A], incomingFrameBuffer[A]),
-			FrameReceiver(source[B], incomingFrameBuffer[B])
+			FrameReceiver(source[A], &(userFrameHandler[A])),
+			FrameReceiver(source[B], &(userFrameHandler[B]))
 	};
 
 	EndPoint endPoint[2] = {
@@ -97,9 +103,14 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_moves_one_frame ) {
 			FrameTransmitter(sink[B], outgoingFrameBuffer[B])
 	};
 
+	FrameBufferUserFrameHandler userFrameHandler[2] = {
+			FrameBufferUserFrameHandler(incomingFrameBuffer[A]),
+			FrameBufferUserFrameHandler(incomingFrameBuffer[B])
+	};
+
 	FrameReceiver frameReceiver[2] = {
-			FrameReceiver(source[A], incomingFrameBuffer[A]),
-			FrameReceiver(source[B], incomingFrameBuffer[B])
+			FrameReceiver(source[A], &(userFrameHandler[A])),
+			FrameReceiver(source[B], &(userFrameHandler[B]))
 	};
 
 	EndPoint endPoint[2] = {
@@ -148,9 +159,14 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_moves_seven_frames ) {
 			FrameTransmitter(sink[B], outgoingFrameBuffer[B])
 	};
 
+	FrameBufferUserFrameHandler userFrameHandler[2] = {
+			FrameBufferUserFrameHandler(incomingFrameBuffer[A]),
+			FrameBufferUserFrameHandler(incomingFrameBuffer[B])
+	};
+
 	FrameReceiver frameReceiver[2] = {
-			FrameReceiver(source[A], incomingFrameBuffer[A]),
-			FrameReceiver(source[B], incomingFrameBuffer[B])
+			FrameReceiver(source[A], &(userFrameHandler[A])),
+			FrameReceiver(source[B], &(userFrameHandler[B]))
 	};
 
 	EndPoint endPoint[2] = {
@@ -205,9 +221,14 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_moves_one_frame_in_each_direction ) {
 			FrameTransmitter(sink[B], outgoingFrameBuffer[B])
 	};
 
+	FrameBufferUserFrameHandler userFrameHandler[2] = {
+			FrameBufferUserFrameHandler(incomingFrameBuffer[A]),
+			FrameBufferUserFrameHandler(incomingFrameBuffer[B])
+	};
+
 	FrameReceiver frameReceiver[2] = {
-			FrameReceiver(source[A], incomingFrameBuffer[A]),
-			FrameReceiver(source[B], incomingFrameBuffer[B])
+			FrameReceiver(source[A], &(userFrameHandler[A])),
+			FrameReceiver(source[B], &(userFrameHandler[B]))
 	};
 
 	EndPoint endPoint[2] = {
@@ -288,9 +309,14 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_moves_one_hundred_frames_in_each_direction_w
 			FrameTransmitter(sink[B], outgoingFrameBuffer[B])
 	};
 
+	FrameBufferUserFrameHandler userFrameHandler[2] = {
+			FrameBufferUserFrameHandler(incomingFrameBuffer[A]),
+			FrameBufferUserFrameHandler(incomingFrameBuffer[B])
+	};
+
 	FrameReceiver frameReceiver[2] = {
-			FrameReceiver(source[A], incomingFrameBuffer[A]),
-			FrameReceiver(source[B], incomingFrameBuffer[B])
+			FrameReceiver(source[A], &(userFrameHandler[A])),
+			FrameReceiver(source[B], &(userFrameHandler[B]))
 	};
 
 	EndPoint endPoint[2] = {

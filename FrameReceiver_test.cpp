@@ -12,6 +12,7 @@
 #include "RingBufferReader.h"
 #include "EscapingSource.h"
 #include "FrameBuffer.h"
+#include "FrameBufferUserFrameHandler.h"
 
 namespace hdlc {
 
@@ -20,7 +21,8 @@ BOOST_AUTO_TEST_CASE( test_FrameReceiver_receives_frame ) {
 	RingBufferReader tmp = RingBufferReader(medium);
 	FrameBuffer frameBuffer;
 	EscapingSource source = EscapingSource(tmp);
-	FrameReceiver receiver(source, frameBuffer);
+	FrameBufferUserFrameHandler handler(frameBuffer);
+	FrameReceiver receiver(source, &handler);
 
 	medium.put(EscapingSource::FLAG);	// flag
 	uint16_t crc = 0xFFFF;
@@ -45,7 +47,8 @@ BOOST_AUTO_TEST_CASE( test_FrameReceiver_ignores_empty_frames ) {
 	RingBufferReader tmp = RingBufferReader(medium);
 	FrameBuffer frameBuffer;
 	EscapingSource source = EscapingSource(tmp);
-	FrameReceiver receiver(source, frameBuffer);
+	FrameBufferUserFrameHandler handler(frameBuffer);
+	FrameReceiver receiver(source, &handler);
 
 	medium.put(EscapingSource::FLAG); 	// flag
 	medium.put(EscapingSource::FLAG); 	// flag
@@ -63,7 +66,8 @@ BOOST_AUTO_TEST_CASE( test_FrameReceiver_ignores_frames_with_unexpected_sequence
 	RingBufferReader tmp = RingBufferReader(medium);
 	FrameBuffer frameBuffer;
 	EscapingSource source = EscapingSource(tmp);
-	FrameReceiver receiver(source, frameBuffer);
+	FrameBufferUserFrameHandler handler(frameBuffer);
+	FrameReceiver receiver(source, &handler);
 
 	medium.put(EscapingSource::FLAG);	// flag
 	uint16_t crc = 0xFFFF;
@@ -88,7 +92,8 @@ BOOST_AUTO_TEST_CASE( test_FrameReceiver_ignores_frames_with_bad_crc ) {
 	RingBufferReader tmp = RingBufferReader(medium);
 	FrameBuffer frameBuffer;
 	EscapingSource source = EscapingSource(tmp);
-	FrameReceiver receiver(source, frameBuffer);
+	FrameBufferUserFrameHandler handler(frameBuffer);
+	FrameReceiver receiver(source, &handler);
 
 	medium.put(EscapingSource::FLAG);	// flag
 	uint16_t crc = 0xFFFF;
@@ -114,7 +119,8 @@ BOOST_AUTO_TEST_CASE( test_FrameReceiver_receives_multiple_frames ) {
 	RingBufferReader tmp = RingBufferReader(medium);
 	FrameBuffer frameBuffer;
 	EscapingSource source = EscapingSource(tmp);
-	FrameReceiver receiver(source, frameBuffer);
+	FrameBufferUserFrameHandler handler(frameBuffer);
+	FrameReceiver receiver(source, &handler);
 	uint8_t count = 7;
 
 	for(int i = 0; i < count; i++) {
@@ -142,7 +148,8 @@ BOOST_AUTO_TEST_CASE( test_FrameReceiver_recognizes_ack_frames ) {
 	RingBufferReader tmp = RingBufferReader(medium);
 	FrameBuffer frameBuffer;
 	EscapingSource source = EscapingSource(tmp);
-	FrameReceiver receiver(source, frameBuffer);
+	FrameBufferUserFrameHandler handler(frameBuffer);
+	FrameReceiver receiver(source, &handler);
 
 	medium.put(EscapingSource::FLAG);	// flag
 	uint16_t crc = 0xFFFF;
