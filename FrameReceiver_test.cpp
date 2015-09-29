@@ -22,7 +22,8 @@ BOOST_AUTO_TEST_CASE( test_FrameReceiver_receives_frame ) {
 	FrameBuffer frameBuffer;
 	EscapingSource source = EscapingSource(tmp);
 	FrameBufferUserFrameHandler handler(frameBuffer);
-	FrameReceiver receiver(source, &handler);
+	FrameReceiver receiver(source);
+	receiver.setFrameHandler(&handler);
 
 	medium.put(EscapingSource::FLAG);	// flag
 	uint16_t crc = 0xFFFF;
@@ -48,7 +49,8 @@ BOOST_AUTO_TEST_CASE( test_FrameReceiver_ignores_empty_frames ) {
 	FrameBuffer frameBuffer;
 	EscapingSource source = EscapingSource(tmp);
 	FrameBufferUserFrameHandler handler(frameBuffer);
-	FrameReceiver receiver(source, &handler);
+	FrameReceiver receiver(source);
+	receiver.setFrameHandler(&handler);
 
 	medium.put(EscapingSource::FLAG); 	// flag
 	medium.put(EscapingSource::FLAG); 	// flag
@@ -67,7 +69,8 @@ BOOST_AUTO_TEST_CASE( test_FrameReceiver_ignores_frames_with_unexpected_sequence
 	FrameBuffer frameBuffer;
 	EscapingSource source = EscapingSource(tmp);
 	FrameBufferUserFrameHandler handler(frameBuffer);
-	FrameReceiver receiver(source, &handler);
+	FrameReceiver receiver(source);
+	receiver.setFrameHandler(&handler);
 
 	medium.put(EscapingSource::FLAG);	// flag
 	uint16_t crc = 0xFFFF;
@@ -93,7 +96,8 @@ BOOST_AUTO_TEST_CASE( test_FrameReceiver_ignores_frames_with_bad_crc ) {
 	FrameBuffer frameBuffer;
 	EscapingSource source = EscapingSource(tmp);
 	FrameBufferUserFrameHandler handler(frameBuffer);
-	FrameReceiver receiver(source, &handler);
+	FrameReceiver receiver(source);
+	receiver.setFrameHandler(&handler);
 
 	medium.put(EscapingSource::FLAG);	// flag
 	uint16_t crc = 0xFFFF;
@@ -120,7 +124,8 @@ BOOST_AUTO_TEST_CASE( test_FrameReceiver_receives_multiple_frames ) {
 	FrameBuffer frameBuffer;
 	EscapingSource source = EscapingSource(tmp);
 	FrameBufferUserFrameHandler handler(frameBuffer);
-	FrameReceiver receiver(source, &handler);
+	FrameReceiver receiver(source);
+	receiver.setFrameHandler(&handler);
 	uint8_t count = 7;
 
 	for(int i = 0; i < count; i++) {
@@ -143,29 +148,37 @@ BOOST_AUTO_TEST_CASE( test_FrameReceiver_receives_multiple_frames ) {
 	BOOST_CHECK(frameBuffer.size() == count);
 }
 
+class AckFrameHandler : public FrameHandler {
+public:
+	SequenceNumber lastAckReceived;
+
+	virtual void handle(const uint8_t header, const uint8_t* payload, const uint8_t payloadSize) {
+		lastAckReceived = header;
+	}
+};
+
 BOOST_AUTO_TEST_CASE( test_FrameReceiver_recognizes_ack_frames ) {
 	RingBuffer<64> medium;
 	RingBufferReader tmp = RingBufferReader(medium);
-	FrameBuffer frameBuffer;
 	EscapingSource source = EscapingSource(tmp);
-	FrameBufferUserFrameHandler handler(frameBuffer);
-	FrameReceiver receiver(source, &handler);
+	AckFrameHandler handler;
+	FrameReceiver receiver(source);
+	receiver.setFrameHandler(&handler);
 
-	medium.put(EscapingSource::FLAG);	// flag
+	medium.put(EscapingSource::FLAG);		// flag
 	uint16_t crc = 0xFFFF;
-	medium.put(0x24 + FrameReceiver::ACK);		// ack with sequence number
+	medium.put(FrameReceiver::ACK + 0x24);	// ack with sequence number
 	crc_ccitt_update(crc, FrameReceiver::ACK + 0x24);
-	medium.put(crc >> 8);				// crc msb
-	medium.put(crc & 0xFF);				// crc lsb
-	medium.put(EscapingSource::FLAG);	// flag
+	medium.put(crc >> 8);					// crc msb
+	medium.put(crc & 0xFF);					// crc lsb
+	medium.put(EscapingSource::FLAG);		// flag
 
 	while(!medium.isEmpty()) {
 		source.schedule();
 		receiver.schedule();
 	}
 
-	BOOST_CHECK(0 == frameBuffer.size());
-	BOOST_CHECK(0x24 == receiver.getLastAckReceived());
+	BOOST_CHECK(0x24 == handler.lastAckReceived);
 }
 
 } /* namespace hdlc */

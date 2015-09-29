@@ -58,14 +58,17 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_does_nothing_when_give_no_frames ) {
 	};
 
 	FrameReceiver frameReceiver[2] = {
-			FrameReceiver(source[A], &(userFrameHandler[A])),
-			FrameReceiver(source[B], &(userFrameHandler[B]))
+			FrameReceiver(source[A]),
+			FrameReceiver(source[B])
 	};
 
 	EndPoint endPoint[2] = {
-			EndPoint(source[A], frameReceiver[A], frameTransmitter[A], sink[A]),
-			EndPoint(source[B], frameReceiver[B], frameTransmitter[B], sink[B])
+			EndPoint(source[A], frameReceiver[A], userFrameHandler[A], frameTransmitter[A], sink[A]),
+			EndPoint(source[B], frameReceiver[B], userFrameHandler[B], frameTransmitter[B], sink[B])
 	};
+
+	frameReceiver[A].setFrameHandler(&(endPoint[A]));
+	frameReceiver[B].setFrameHandler(&(endPoint[B]));
 
 	for(int i = 0; i < 100; i++) {
 		endPoint[A].schedule();
@@ -109,14 +112,17 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_moves_one_frame ) {
 	};
 
 	FrameReceiver frameReceiver[2] = {
-			FrameReceiver(source[A], &(userFrameHandler[A])),
-			FrameReceiver(source[B], &(userFrameHandler[B]))
+			FrameReceiver(source[A]),
+			FrameReceiver(source[B])
 	};
 
 	EndPoint endPoint[2] = {
-			EndPoint(source[A], frameReceiver[A], frameTransmitter[A], sink[A]),
-			EndPoint(source[B], frameReceiver[B], frameTransmitter[B], sink[B])
+			EndPoint(source[A], frameReceiver[A], userFrameHandler[A], frameTransmitter[A], sink[A]),
+			EndPoint(source[B], frameReceiver[B], userFrameHandler[B], frameTransmitter[B], sink[B])
 	};
+
+	frameReceiver[A].setFrameHandler(&(endPoint[A]));
+	frameReceiver[B].setFrameHandler(&(endPoint[B]));
 
 	outgoingFrameBuffer[A].put(0x42);
 	outgoingFrameBuffer[A].endFrame();
@@ -165,16 +171,19 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_moves_seven_frames ) {
 	};
 
 	FrameReceiver frameReceiver[2] = {
-			FrameReceiver(source[A], &(userFrameHandler[A])),
-			FrameReceiver(source[B], &(userFrameHandler[B]))
+			FrameReceiver(source[A]),
+			FrameReceiver(source[B])
 	};
 
 	EndPoint endPoint[2] = {
-			EndPoint(source[A], frameReceiver[A], frameTransmitter[A], sink[A]),
-			EndPoint(source[B], frameReceiver[B], frameTransmitter[B], sink[B])
+			EndPoint(source[A], frameReceiver[A], userFrameHandler[A], frameTransmitter[A], sink[A]),
+			EndPoint(source[B], frameReceiver[B], userFrameHandler[B], frameTransmitter[B], sink[B])
 	};
 
-	int frameCount = 7;
+	frameReceiver[A].setFrameHandler(&(endPoint[A]));
+	frameReceiver[B].setFrameHandler(&(endPoint[B]));
+
+	int frameCount = 2;
 	for(int i = 0; i < frameCount; i++) {
 		outgoingFrameBuffer[A].put(0x42 + i);
 		outgoingFrameBuffer[A].endFrame();
@@ -227,14 +236,17 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_moves_one_frame_in_each_direction ) {
 	};
 
 	FrameReceiver frameReceiver[2] = {
-			FrameReceiver(source[A], &(userFrameHandler[A])),
-			FrameReceiver(source[B], &(userFrameHandler[B]))
+			FrameReceiver(source[A]),
+			FrameReceiver(source[B])
 	};
 
 	EndPoint endPoint[2] = {
-			EndPoint(source[A], frameReceiver[A], frameTransmitter[A], sink[A]),
-			EndPoint(source[B], frameReceiver[B], frameTransmitter[B], sink[B])
+			EndPoint(source[A], frameReceiver[A], userFrameHandler[A], frameTransmitter[A], sink[A]),
+			EndPoint(source[B], frameReceiver[B], userFrameHandler[B], frameTransmitter[B], sink[B])
 	};
+
+	frameReceiver[A].setFrameHandler(&(endPoint[A]));
+	frameReceiver[B].setFrameHandler(&(endPoint[B]));
 
 	outgoingFrameBuffer[A].put(0x42);
 	outgoingFrameBuffer[A].endFrame();
@@ -315,14 +327,17 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_moves_one_hundred_frames_in_each_direction_w
 	};
 
 	FrameReceiver frameReceiver[2] = {
-			FrameReceiver(source[A], &(userFrameHandler[A])),
-			FrameReceiver(source[B], &(userFrameHandler[B]))
+			FrameReceiver(source[A]),
+			FrameReceiver(source[B])
 	};
 
 	EndPoint endPoint[2] = {
-			EndPoint(source[A], frameReceiver[A], frameTransmitter[A], sink[A]),
-			EndPoint(source[B], frameReceiver[B], frameTransmitter[B], sink[B])
+			EndPoint(source[A], frameReceiver[A], userFrameHandler[A], frameTransmitter[A], sink[A]),
+			EndPoint(source[B], frameReceiver[B], userFrameHandler[B], frameTransmitter[B], sink[B])
 	};
+
+	frameReceiver[A].setFrameHandler(&(endPoint[A]));
+	frameReceiver[B].setFrameHandler(&(endPoint[B]));
 
 	int framesSent[2] = { 0, 0 };
 	int framesReceived[2] = { 0, 0 };
