@@ -63,8 +63,8 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_does_nothing_when_give_no_frames ) {
 	};
 
 	EndPoint endPoint[2] = {
-			EndPoint(source[A], frameReceiver[A], userFrameHandler[A], frameTransmitter[A], sink[A]),
-			EndPoint(source[B], frameReceiver[B], userFrameHandler[B], frameTransmitter[B], sink[B])
+			EndPoint(source[A], frameReceiver[A], userFrameHandler[A], outgoingFrameBuffer[A], frameTransmitter[A], sink[A]),
+			EndPoint(source[B], frameReceiver[B], userFrameHandler[B], outgoingFrameBuffer[B], frameTransmitter[B], sink[B])
 	};
 
 	frameReceiver[A].setFrameHandler(&(endPoint[A]));
@@ -117,8 +117,8 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_moves_one_frame ) {
 	};
 
 	EndPoint endPoint[2] = {
-			EndPoint(source[A], frameReceiver[A], userFrameHandler[A], frameTransmitter[A], sink[A]),
-			EndPoint(source[B], frameReceiver[B], userFrameHandler[B], frameTransmitter[B], sink[B])
+			EndPoint(source[A], frameReceiver[A], userFrameHandler[A], outgoingFrameBuffer[A], frameTransmitter[A], sink[A]),
+			EndPoint(source[B], frameReceiver[B], userFrameHandler[B], outgoingFrameBuffer[B], frameTransmitter[B], sink[B])
 	};
 
 	frameReceiver[A].setFrameHandler(&(endPoint[A]));
@@ -176,8 +176,8 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_moves_seven_frames ) {
 	};
 
 	EndPoint endPoint[2] = {
-			EndPoint(source[A], frameReceiver[A], userFrameHandler[A], frameTransmitter[A], sink[A]),
-			EndPoint(source[B], frameReceiver[B], userFrameHandler[B], frameTransmitter[B], sink[B])
+			EndPoint(source[A], frameReceiver[A], userFrameHandler[A], outgoingFrameBuffer[A], frameTransmitter[A], sink[A]),
+			EndPoint(source[B], frameReceiver[B], userFrameHandler[B], outgoingFrameBuffer[B], frameTransmitter[B], sink[B])
 	};
 
 	frameReceiver[A].setFrameHandler(&(endPoint[A]));
@@ -241,8 +241,8 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_moves_one_frame_in_each_direction ) {
 	};
 
 	EndPoint endPoint[2] = {
-			EndPoint(source[A], frameReceiver[A], userFrameHandler[A], frameTransmitter[A], sink[A]),
-			EndPoint(source[B], frameReceiver[B], userFrameHandler[B], frameTransmitter[B], sink[B])
+			EndPoint(source[A], frameReceiver[A], userFrameHandler[A], outgoingFrameBuffer[A], frameTransmitter[A], sink[A]),
+			EndPoint(source[B], frameReceiver[B], userFrameHandler[B], outgoingFrameBuffer[B], frameTransmitter[B], sink[B])
 	};
 
 	frameReceiver[A].setFrameHandler(&(endPoint[A]));
@@ -309,8 +309,8 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_ignores_frames_with_unexpected_sequence_numb
 	};
 
 	EndPoint endPoint[2] = {
-			EndPoint(source[A], frameReceiver[A], userFrameHandler[A], frameTransmitter[A], sink[A]),
-			EndPoint(source[B], frameReceiver[B], userFrameHandler[B], frameTransmitter[B], sink[B])
+			EndPoint(source[A], frameReceiver[A], userFrameHandler[A], outgoingFrameBuffer[A], frameTransmitter[A], sink[A]),
+			EndPoint(source[B], frameReceiver[B], userFrameHandler[B], outgoingFrameBuffer[B], frameTransmitter[B], sink[B])
 	};
 
 	frameReceiver[A].setFrameHandler(&(endPoint[A]));
@@ -394,8 +394,8 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_moves_one_hundred_frames_in_each_direction_w
 	};
 
 	EndPoint endPoint[2] = {
-			EndPoint(source[A], frameReceiver[A], userFrameHandler[A], frameTransmitter[A], sink[A]),
-			EndPoint(source[B], frameReceiver[B], userFrameHandler[B], frameTransmitter[B], sink[B])
+			EndPoint(source[A], frameReceiver[A], userFrameHandler[A], outgoingFrameBuffer[A], frameTransmitter[A], sink[A]),
+			EndPoint(source[B], frameReceiver[B], userFrameHandler[B], outgoingFrameBuffer[B], frameTransmitter[B], sink[B])
 	};
 
 	frameReceiver[A].setFrameHandler(&(endPoint[A]));
