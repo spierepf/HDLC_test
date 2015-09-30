@@ -13,6 +13,7 @@
 #include "EscapingSource.h"
 #include "FrameBuffer.h"
 #include "FrameBufferUserFrameHandler.h"
+#include "SequenceNumber.h"
 
 namespace hdlc {
 
@@ -54,33 +55,6 @@ BOOST_AUTO_TEST_CASE( test_FrameReceiver_ignores_empty_frames ) {
 
 	medium.put(EscapingSource::FLAG); 	// flag
 	medium.put(EscapingSource::FLAG); 	// flag
-
-	while(!medium.isEmpty()) {
-		source.schedule();
-		receiver.schedule();
-	}
-
-	BOOST_CHECK(frameBuffer.size() == 0);
-}
-
-BOOST_AUTO_TEST_CASE( test_FrameReceiver_ignores_frames_with_unexpected_sequence_number ) {
-	RingBuffer<64> medium;
-	RingBufferReader tmp = RingBufferReader(medium);
-	FrameBuffer frameBuffer;
-	EscapingSource source = EscapingSource(tmp);
-	FrameBufferUserFrameHandler handler(frameBuffer);
-	FrameReceiver receiver(source);
-	receiver.setFrameHandler(&handler);
-
-	medium.put(EscapingSource::FLAG);	// flag
-	uint16_t crc = 0xFFFF;
-	medium.put(0x00 ^ 0x01);			// unexpected sequence number
-	crc_ccitt_update(crc, 0x00 ^ 0x01);
-	medium.put(0x42);		 			// data
-	crc_ccitt_update(crc, 0x42);
-	medium.put(crc >> 8);				// crc msb
-	medium.put(crc & 0xFF);				// crc lsb
-	medium.put(EscapingSource::FLAG);	// flag
 
 	while(!medium.isEmpty()) {
 		source.schedule();

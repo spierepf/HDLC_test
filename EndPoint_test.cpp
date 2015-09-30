@@ -271,6 +271,68 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_moves_one_frame_in_each_direction ) {
 	BOOST_CHECK(0x43 == incomingFrameBuffer[A][0][0]);
 }
 
+BOOST_AUTO_TEST_CASE( test_EndPoint_ignores_frames_with_unexpected_sequence_number ) {
+	RingBuffer<64> mediumAB;
+	RingBuffer<64> mediumBA;
+
+	RingBufferWriter sinkA = RingBufferWriter(mediumAB);
+	RingBufferWriter sinkB = RingBufferWriter(mediumBA);
+	RingBufferReader readerA = RingBufferReader(mediumBA);
+	RingBufferReader readerB = RingBufferReader(mediumAB);
+
+	EscapingSink sink[2] = {
+			EscapingSink(sinkA),
+			EscapingSink(sinkB)
+	};
+
+	EscapingSource source[2] = {
+			EscapingSource(readerA),
+			EscapingSource(readerB)
+	};
+
+	FrameBuffer outgoingFrameBuffer[2];
+	FrameBuffer incomingFrameBuffer[2];
+
+	FrameTransmitter frameTransmitter[2] = {
+			FrameTransmitter(sink[A], outgoingFrameBuffer[A]),
+			FrameTransmitter(sink[B], outgoingFrameBuffer[B])
+	};
+
+	FrameBufferUserFrameHandler userFrameHandler[2] = {
+			FrameBufferUserFrameHandler(incomingFrameBuffer[A]),
+			FrameBufferUserFrameHandler(incomingFrameBuffer[B])
+	};
+
+	FrameReceiver frameReceiver[2] = {
+			FrameReceiver(source[A]),
+			FrameReceiver(source[B])
+	};
+
+	EndPoint endPoint[2] = {
+			EndPoint(source[A], frameReceiver[A], userFrameHandler[A], frameTransmitter[A], sink[A]),
+			EndPoint(source[B], frameReceiver[B], userFrameHandler[B], frameTransmitter[B], sink[B])
+	};
+
+	frameReceiver[A].setFrameHandler(&(endPoint[A]));
+	frameReceiver[B].setFrameHandler(&(endPoint[B]));
+
+	mediumAB.put(EscapingSource::FLAG);	// flag
+	uint16_t crc = 0xFFFF;
+	mediumAB.put(0x00 ^ 0x01);			// unexpected sequence number
+	crc_ccitt_update(crc, 0x00 ^ 0x01);
+	mediumAB.put(0x42);		 			// data
+	crc_ccitt_update(crc, 0x42);
+	mediumAB.put(crc >> 8);				// crc msb
+	mediumAB.put(crc & 0xFF);				// crc lsb
+	mediumAB.put(EscapingSource::FLAG);	// flag
+
+	while(!mediumAB.isEmpty()) {
+		endPoint[B].schedule();
+	}
+
+	BOOST_CHECK(incomingFrameBuffer[B].size() == 0);
+}
+
 class NoisySink : public Sink<uint8_t> {
 	Sink<uint8_t>& sink;
 
