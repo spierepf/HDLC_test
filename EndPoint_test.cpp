@@ -48,8 +48,8 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_does_nothing_when_give_no_frames ) {
 	FrameBuffer incomingFrameBuffer[2];
 
 	FrameTransmitter frameTransmitter[2] = {
-			FrameTransmitter(sink[A], outgoingFrameBuffer[A]),
-			FrameTransmitter(sink[B], outgoingFrameBuffer[B])
+			FrameTransmitter(sink[A]),
+			FrameTransmitter(sink[B])
 	};
 
 	FrameBufferUserFrameHandler userFrameHandler[2] = {
@@ -102,8 +102,8 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_moves_one_frame ) {
 	FrameBuffer incomingFrameBuffer[2];
 
 	FrameTransmitter frameTransmitter[2] = {
-			FrameTransmitter(sink[A], outgoingFrameBuffer[A]),
-			FrameTransmitter(sink[B], outgoingFrameBuffer[B])
+			FrameTransmitter(sink[A]),
+			FrameTransmitter(sink[B])
 	};
 
 	FrameBufferUserFrameHandler userFrameHandler[2] = {
@@ -161,8 +161,8 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_moves_seven_frames ) {
 	FrameBuffer incomingFrameBuffer[2];
 
 	FrameTransmitter frameTransmitter[2] = {
-			FrameTransmitter(sink[A], outgoingFrameBuffer[A]),
-			FrameTransmitter(sink[B], outgoingFrameBuffer[B])
+			FrameTransmitter(sink[A]),
+			FrameTransmitter(sink[B])
 	};
 
 	FrameBufferUserFrameHandler userFrameHandler[2] = {
@@ -226,8 +226,8 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_moves_one_frame_in_each_direction ) {
 	FrameBuffer incomingFrameBuffer[2];
 
 	FrameTransmitter frameTransmitter[2] = {
-			FrameTransmitter(sink[A], outgoingFrameBuffer[A]),
-			FrameTransmitter(sink[B], outgoingFrameBuffer[B])
+			FrameTransmitter(sink[A]),
+			FrameTransmitter(sink[B])
 	};
 
 	FrameBufferUserFrameHandler userFrameHandler[2] = {
@@ -294,8 +294,8 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_ignores_frames_with_unexpected_sequence_numb
 	FrameBuffer incomingFrameBuffer[2];
 
 	FrameTransmitter frameTransmitter[2] = {
-			FrameTransmitter(sink[A], outgoingFrameBuffer[A]),
-			FrameTransmitter(sink[B], outgoingFrameBuffer[B])
+			FrameTransmitter(sink[A]),
+			FrameTransmitter(sink[B])
 	};
 
 	FrameBufferUserFrameHandler userFrameHandler[2] = {
@@ -379,8 +379,8 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_moves_one_hundred_frames_in_each_direction_w
 	FrameBuffer incomingFrameBuffer[2];
 
 	FrameTransmitter frameTransmitter[2] = {
-			FrameTransmitter(sink[A], outgoingFrameBuffer[A]),
-			FrameTransmitter(sink[B], outgoingFrameBuffer[B])
+			FrameTransmitter(sink[A]),
+			FrameTransmitter(sink[B])
 	};
 
 	FrameBufferUserFrameHandler userFrameHandler[2] = {
