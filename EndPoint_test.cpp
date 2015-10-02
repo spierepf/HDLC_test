@@ -287,6 +287,10 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_moves_one_frame ) {
 	frameReceiver[B].setFrameHandler(&(endPoint[B]));
 
 	endPoint[A].connect();
+	while(!endPoint[B].isConnected()) {
+		endPoint[A].schedule();
+		endPoint[B].schedule();
+	}
 
 	outgoingFrameBuffer[A].put(0x42);
 	outgoingFrameBuffer[A].endFrame();
@@ -348,6 +352,10 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_moves_seven_frames ) {
 	frameReceiver[B].setFrameHandler(&(endPoint[B]));
 
 	endPoint[A].connect();
+	while(!endPoint[B].isConnected()) {
+		endPoint[A].schedule();
+		endPoint[B].schedule();
+	}
 
 	int frameCount = 2;
 	for(int i = 0; i < frameCount; i++) {
@@ -415,6 +423,10 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_moves_one_frame_in_each_direction ) {
 	frameReceiver[B].setFrameHandler(&(endPoint[B]));
 
 	endPoint[A].connect();
+	while(!endPoint[B].isConnected()) {
+		endPoint[A].schedule();
+		endPoint[B].schedule();
+	}
 
 	outgoingFrameBuffer[A].put(0x42);
 	outgoingFrameBuffer[A].endFrame();
@@ -485,6 +497,10 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_ignores_frames_with_unexpected_sequence_numb
 	frameReceiver[B].setFrameHandler(&(endPoint[B]));
 
 	endPoint[A].connect();
+	while(!endPoint[B].isConnected()) {
+		endPoint[A].schedule();
+		endPoint[B].schedule();
+	}
 
 	mediumAB.put(EscapingSource::FLAG);	// flag
 	uint16_t crc = 0xFFFF;
@@ -572,6 +588,10 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_moves_one_hundred_frames_in_each_direction_w
 	frameReceiver[B].setFrameHandler(&(endPoint[B]));
 
 	endPoint[A].connect();
+	while(!endPoint[B].isConnected()) {
+		endPoint[A].schedule();
+		endPoint[B].schedule();
+	}
 
 	int framesSent[2] = { 0, 0 };
 	int framesReceived[2] = { 0, 0 };
