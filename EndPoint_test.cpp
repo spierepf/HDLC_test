@@ -25,6 +25,110 @@ station_t other(station_t station) {
 	return station == A ? B : A;
 }
 
+BOOST_AUTO_TEST_CASE( test_EndPoint_is_born_disconnected ) {
+	RingBuffer<64> mediumAB;
+	RingBuffer<64> mediumBA;
+
+	RingBufferWriter sinkA = RingBufferWriter(mediumAB);
+	RingBufferWriter sinkB = RingBufferWriter(mediumBA);
+	RingBufferReader readerA = RingBufferReader(mediumBA);
+	RingBufferReader readerB = RingBufferReader(mediumAB);
+
+	EscapingSink sink[2] = {
+			EscapingSink(sinkA),
+			EscapingSink(sinkB)
+	};
+
+	EscapingSource source[2] = {
+			EscapingSource(readerA),
+			EscapingSource(readerB)
+	};
+
+	FrameBuffer outgoingFrameBuffer[2];
+	FrameBuffer incomingFrameBuffer[2];
+
+	FrameTransmitter frameTransmitter[2] = {
+			FrameTransmitter(sink[A]),
+			FrameTransmitter(sink[B])
+	};
+
+	FrameBufferUserFrameHandler userFrameHandler[2] = {
+			FrameBufferUserFrameHandler(incomingFrameBuffer[A]),
+			FrameBufferUserFrameHandler(incomingFrameBuffer[B])
+	};
+
+	FrameReceiver frameReceiver[2] = {
+			FrameReceiver(source[A]),
+			FrameReceiver(source[B])
+	};
+
+	EndPoint endPoint[2] = {
+			EndPoint(source[A], frameReceiver[A], userFrameHandler[A], outgoingFrameBuffer[A], frameTransmitter[A], sink[A]),
+			EndPoint(source[B], frameReceiver[B], userFrameHandler[B], outgoingFrameBuffer[B], frameTransmitter[B], sink[B])
+	};
+
+	frameReceiver[A].setFrameHandler(&(endPoint[A]));
+	frameReceiver[B].setFrameHandler(&(endPoint[B]));
+
+	BOOST_CHECK(false == endPoint[A].isConnected());
+}
+
+BOOST_AUTO_TEST_CASE( test_EndPoint_connect_does_what_it_says_on_the_box ) {
+	RingBuffer<64> mediumAB;
+	RingBuffer<64> mediumBA;
+
+	RingBufferWriter sinkA = RingBufferWriter(mediumAB);
+	RingBufferWriter sinkB = RingBufferWriter(mediumBA);
+	RingBufferReader readerA = RingBufferReader(mediumBA);
+	RingBufferReader readerB = RingBufferReader(mediumAB);
+
+	EscapingSink sink[2] = {
+			EscapingSink(sinkA),
+			EscapingSink(sinkB)
+	};
+
+	EscapingSource source[2] = {
+			EscapingSource(readerA),
+			EscapingSource(readerB)
+	};
+
+	FrameBuffer outgoingFrameBuffer[2];
+	FrameBuffer incomingFrameBuffer[2];
+
+	FrameTransmitter frameTransmitter[2] = {
+			FrameTransmitter(sink[A]),
+			FrameTransmitter(sink[B])
+	};
+
+	FrameBufferUserFrameHandler userFrameHandler[2] = {
+			FrameBufferUserFrameHandler(incomingFrameBuffer[A]),
+			FrameBufferUserFrameHandler(incomingFrameBuffer[B])
+	};
+
+	FrameReceiver frameReceiver[2] = {
+			FrameReceiver(source[A]),
+			FrameReceiver(source[B])
+	};
+
+	EndPoint endPoint[2] = {
+			EndPoint(source[A], frameReceiver[A], userFrameHandler[A], outgoingFrameBuffer[A], frameTransmitter[A], sink[A]),
+			EndPoint(source[B], frameReceiver[B], userFrameHandler[B], outgoingFrameBuffer[B], frameTransmitter[B], sink[B])
+	};
+
+	frameReceiver[A].setFrameHandler(&(endPoint[A]));
+	frameReceiver[B].setFrameHandler(&(endPoint[B]));
+
+	endPoint[A].connect();
+
+	for(int i = 0; i < 100; i++) {
+		endPoint[A].schedule();
+		endPoint[B].schedule();
+	}
+
+	BOOST_CHECK(true == endPoint[A].isConnected());
+	BOOST_CHECK(true == endPoint[B].isConnected());
+}
+
 BOOST_AUTO_TEST_CASE( test_EndPoint_does_nothing_while_disconnected ) {
 	RingBuffer<64> mediumAB;
 	RingBuffer<64> mediumBA;
@@ -127,7 +231,6 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_does_nothing_when_give_no_frames ) {
 	frameReceiver[B].setFrameHandler(&(endPoint[B]));
 
 	endPoint[A].connect();
-	endPoint[B].connect();
 
 	for(int i = 0; i < 100; i++) {
 		endPoint[A].schedule();
@@ -184,7 +287,6 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_moves_one_frame ) {
 	frameReceiver[B].setFrameHandler(&(endPoint[B]));
 
 	endPoint[A].connect();
-	endPoint[B].connect();
 
 	outgoingFrameBuffer[A].put(0x42);
 	outgoingFrameBuffer[A].endFrame();
@@ -246,7 +348,6 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_moves_seven_frames ) {
 	frameReceiver[B].setFrameHandler(&(endPoint[B]));
 
 	endPoint[A].connect();
-	endPoint[B].connect();
 
 	int frameCount = 2;
 	for(int i = 0; i < frameCount; i++) {
@@ -314,7 +415,6 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_moves_one_frame_in_each_direction ) {
 	frameReceiver[B].setFrameHandler(&(endPoint[B]));
 
 	endPoint[A].connect();
-	endPoint[B].connect();
 
 	outgoingFrameBuffer[A].put(0x42);
 	outgoingFrameBuffer[A].endFrame();
@@ -385,7 +485,6 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_ignores_frames_with_unexpected_sequence_numb
 	frameReceiver[B].setFrameHandler(&(endPoint[B]));
 
 	endPoint[A].connect();
-	endPoint[B].connect();
 
 	mediumAB.put(EscapingSource::FLAG);	// flag
 	uint16_t crc = 0xFFFF;
@@ -394,7 +493,7 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_ignores_frames_with_unexpected_sequence_numb
 	mediumAB.put(0x42);		 			// data
 	crc_ccitt_update(crc, 0x42);
 	mediumAB.put(crc >> 8);				// crc msb
-	mediumAB.put(crc & 0xFF);				// crc lsb
+	mediumAB.put(crc & 0xFF);			// crc lsb
 	mediumAB.put(EscapingSource::FLAG);	// flag
 
 	while(!mediumAB.isEmpty()) {
@@ -473,7 +572,6 @@ BOOST_AUTO_TEST_CASE( test_EndPoint_moves_one_hundred_frames_in_each_direction_w
 	frameReceiver[B].setFrameHandler(&(endPoint[B]));
 
 	endPoint[A].connect();
-	endPoint[B].connect();
 
 	int framesSent[2] = { 0, 0 };
 	int framesReceived[2] = { 0, 0 };
